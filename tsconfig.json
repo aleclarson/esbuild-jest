@@ -1,13 +1,17 @@
 {
+  "include": ["src"],
   "compilerOptions": {
+    "strict": true,
     "target": "es2018",
     "module": "commonjs",
     "outDir": "dist",
+    "sourceMap": true,
+    "declaration": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "importHelpers": true,
     "esModuleInterop": true, 
-    "lib" :[
+    "lib": [
       "dom",
       "es2015",
       "es2017",
