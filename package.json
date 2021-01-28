@@ -7,21 +7,20 @@
     "build": "tsc -p .",
     "test": "jest --no-cache"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/aelbore/esbuild-jest.git"
-  },
+  "repository": "aleclarson/esbuild-jest",
   "keywords": [
     "esbuild",
     "jest",
     "test"
   ],
   "author": "Arjay Elbore <aelbore.sg@gmail.com>",
+  "maintainers": [
+    "Alec Larson"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/aelbore/esbuild-jest/issues"
   },
-  "homepage": "https://github.com/aelbore/esbuild-jest#readme",
   "peerDependencies": {
     "esbuild": ">=0.8.16"
   },
