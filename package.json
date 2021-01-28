@@ -1,5 +1,5 @@
 {
-  "name": "esbuild-jest",
+  "name": "@alloc/esbuild-jest",
   "version": "0.3.0",
   "description": "Jest plugin to use esbuild for transformation",
   "main": "esbuild-jest.js",
