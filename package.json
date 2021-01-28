@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc -p .",
+    "prepare": "yarn build",
     "test": "jest --no-cache"
   },
   "repository": "aleclarson/esbuild-jest",
