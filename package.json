@@ -8,6 +8,10 @@
     "test": "jest --no-cache"
   },
   "repository": "aleclarson/esbuild-jest",
+  "files": [
+    "src",
+    "dist"
+  ],
   "keywords": [
     "esbuild",
     "jest",
