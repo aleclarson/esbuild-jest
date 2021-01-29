@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@alloc/prettier-config@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/@alloc/prettier-config/-/prettier-config-1.0.0.tgz#5fd04d9bb3da44fc0e5b4e56cd82604eae442a45"
+  integrity sha512-xm50V1qxSdTh1O1fKA+gqcU605YSnxfq6HwtYSFU3fRsKMFnUSuSOxqSAPI7y2sRxqPed2EIuGmNn107LVQM6g==
+
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.10.4":
   version "7.10.4"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.10.4.tgz#168da1a36e90da68ae8d49c0f1b48c7c6249213a"
@@ -2757,7 +2762,7 @@ prelude-ls@~1.1.2:
 
 prettier@^2.2.1:
   version "2.2.1"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.2.1.tgz#795a1a78dd52f073da0cd42b21f9c91381923ff5"
+  resolved "https://registry.npmjs.org/prettier/-/prettier-2.2.1.tgz#795a1a78dd52f073da0cd42b21f9c91381923ff5"
   integrity sha512-PqyhM2yCjg/oKkFPtTGUojv7gnZAoG80ttl45O6x2Ug/rMJw4wcc9k6aaf2hibP7BGVCCM33gZoGjyvt9mm16Q==
 
 pretty-format@^26.0.0, pretty-format@^26.6.2:
