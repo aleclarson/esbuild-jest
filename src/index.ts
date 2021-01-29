@@ -10,30 +10,26 @@ export interface Options {
   target?: string
 }
 
-export function process(content: string, filename: string, config: any) {
-  const options: Options = getOptions(config)
-
-  const ext = getExt(filename)
-  const loader =
-    options.loaders?.[ext] || (extname(filename).slice(1) as Loader)
-
-  const result = transformSync(content, {
-    loader,
-    format: 'cjs',
-    target: 'es2018',
-    sourcemap: 'both',
-    sourcefile: filename,
-    ...options,
-  })
-
-  return {
-    code: result.code,
-    map: {
-      ...JSON.parse(result.map),
-      sourcesContent: null,
-    },
-  }
-}
+export const createTransformer = ({ loaders, ...options }: Options = {}) => ({
+  process(content: string, filename: string) {
+    const ext = getExt(filename)
+    const result = transformSync(content, {
+      loader: loaders?.[ext] || (extname(filename).slice(1) as Loader),
+      format: 'cjs',
+      target: 'es2018',
+      sourcemap: 'both',
+      sourcefile: filename,
+      ...options,
+    })
+    return {
+      code: result.code,
+      map: {
+        ...JSON.parse(result.map),
+        sourcesContent: null,
+      },
+    }
+  },
+})
 
 function getExt(str: string) {
   const basename = path.basename(str)
@@ -44,14 +40,4 @@ function getExt(str: string) {
   if (firstDot === lastDot) return extname
 
   return basename.slice(firstDot, lastDot) + extname
-}
-
-function getOptions(config: any) {
-  let options = {}
-
-  for (let i = 0; i < config.transform.length; i++) {
-    options = config.transform[i][2]
-  }
-
-  return options
 }
