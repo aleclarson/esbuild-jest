@@ -25,40 +25,33 @@ const getOptions = (config: any) => {
 export interface Options {
   jsxFactory?: string
   jsxFragment?: string
-  sourcemap?: boolean | 'inline' | 'external'
   loaders?: {
     [ext: string]: Loader
-  },
+  }
   target?: string
-  format?: string
 }
 
 export function process(content: string, filename: string, config: any) {
   const options: Options = getOptions(config)
 
   const ext = getExt(filename)
-  const loader = options?.loaders && options?.loaders[ext] 
-    ? options.loaders[ext]
-    : extname(filename).slice(1) as Loader
-
-  const sourcemaps: Partial<TransformOptions> = options?.sourcemap
-    ? { sourcemap: "both", sourcefile: filename }
-    : {}
+  const loader =
+    options.loaders?.[ext] || (extname(filename).slice(1) as Loader)
 
   const result = transformSync(content, {
     loader,
-    format: options?.format as Format || 'cjs',
-    target: options?.target || 'es2018',
-    ...(options?.jsxFactory ? { jsxFactory: options.jsxFactory }: {}),
-    ...(options?.jsxFragment ? { jsxFragment: options.jsxFragment }: {}),
-    ...sourcemaps
+    format: 'cjs',
+    target: 'es2018',
+    sourcemap: 'both',
+    sourcefile: filename,
+    ...options,
   })
 
   return {
     code: result.code,
-    map: result?.map ? {
+    map: {
       ...JSON.parse(result.map),
       sourcesContent: null,
-    } : null
+    },
   }
 }
