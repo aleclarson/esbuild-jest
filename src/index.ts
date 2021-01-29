@@ -17,16 +17,22 @@ export const createTransformer = ({ loaders, ...options }: Options = {}) => ({
       loader: loaders?.[ext] || (extname(filename).slice(1) as Loader),
       format: 'cjs',
       target: 'es2018',
-      sourcemap: 'both',
+      sourcemap: 'external',
       sourcefile: filename,
       ...options,
     })
+    const map = {
+      ...JSON.parse(result.map),
+      sourcesContent: null,
+    }
+    // Append the inline sourcemap manually to ensure the "sourcesContent"
+    // is null. Otherwise, breakpoints won't pause within the actual source.
     return {
-      code: result.code,
-      map: {
-        ...JSON.parse(result.map),
-        sourcesContent: null,
-      },
+      code:
+        result.code +
+        '\n//# sourceMappingURL=data:application/json;base64,' +
+        Buffer.from(JSON.stringify(map)).toString('base64'),
+      map,
     }
   },
 })
