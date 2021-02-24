@@ -8,15 +8,6 @@
     "sourceMap": true,
     "declaration": true,
     "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "importHelpers": true,
-    "esModuleInterop": true, 
-    "lib": [
-      "dom",
-      "es2015",
-      "es2017",
-      "es2018",
-      "es2019"
-    ]
+    "esModuleInterop": true
   }
 }
