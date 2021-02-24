@@ -1,6 +1,6 @@
 {
   "name": "@alloc/esbuild-jest",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "Jest plugin to use esbuild for transformation",
   "main": "dist/index.js",
   "scripts": {
