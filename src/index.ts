@@ -25,6 +25,12 @@ export const createTransformer = (options: Options | null) => {
         sourcefile: filename,
         ...options,
       })
+      if (/\bjest\.mock\b/.test(result.code)) {
+        const { nebu } = require('nebu')
+        result.code = nebu.process(result.code, {
+          plugins: [hoistJestMock],
+        }).js
+      }
       const map = {
         ...JSON.parse(result.map),
         sourcesContent: null,
@@ -51,4 +57,20 @@ function getExt(str: string) {
   if (firstDot === lastDot) return extname
 
   return basename.slice(firstDot, lastDot) + extname
+}
+
+const hoistJestMock: import('nebu').Plugin = {
+  Program(prog) {
+    prog.walk('body', stmt => {
+      if (!stmt.isExpressionStatement()) return
+      const expr = stmt.expression
+      if (!expr.isCallExpression()) return
+      if (!expr.callee.isMemberExpression()) return
+      const callee = expr.callee.toString()
+      if (callee == 'jest.mock') {
+        prog.before(stmt.toString() + '\n')
+        stmt.remove()
+      }
+    })
+  },
 }

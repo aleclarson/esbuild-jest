@@ -29,6 +29,9 @@
   "peerDependencies": {
     "esbuild": ">=0.8.31"
   },
+  "dependencies": {
+    "nebu": "^2.2.1"
+  },
   "devDependencies": {
     "@alloc/prettier-config": "^1.0.0",
     "@types/jest": "^26.0.15",
