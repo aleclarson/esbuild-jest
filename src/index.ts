@@ -24,6 +24,9 @@ export const createTransformer = (options: Options | null) => {
         sourcemap: 'external',
         sourcefile: filename,
         ...options,
+        // Esbuild does not enable strict mode when compiling ES modules to
+        // CommonJS format: https://github.com/evanw/esbuild/issues/422#issuecomment-739740602
+        banner: /^(im|ex)port /m.test(content) ? '"use strict";' : undefined,
       })
       if (/\bjest\.mock\b/.test(result.code)) {
         const { nebu } = require('nebu')
