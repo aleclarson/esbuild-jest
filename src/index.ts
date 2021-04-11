@@ -17,6 +17,7 @@ export const createTransformer = (options: Options | null) => {
   return {
     process(content: string, filename: string) {
       const ext = getExt(filename)
+      const strict = /^(im|ex)port /m.test(content)
       const result = transformSync(content, {
         loader: loaders[ext] || (extname(filename).slice(1) as Loader),
         format: 'cjs',
@@ -26,12 +27,13 @@ export const createTransformer = (options: Options | null) => {
         ...options,
         // Esbuild does not enable strict mode when compiling ES modules to
         // CommonJS format: https://github.com/evanw/esbuild/issues/422#issuecomment-739740602
-        banner: /^(im|ex)port /m.test(content) ? '"use strict";' : undefined,
+        banner: strict ? '"use strict";' : undefined,
       })
       if (/\bjest\.mock\b/.test(result.code)) {
-        const { nebu } = require('nebu')
+        const { nebu } = require('nebu') as typeof import('nebu')
         result.code = nebu.process(result.code, {
           plugins: [hoistJestMock],
+          state: { strict },
         }).js
       }
       const map = {
@@ -63,7 +65,10 @@ function getExt(str: string) {
 }
 
 const hoistJestMock: import('nebu').Plugin = {
-  Program(prog) {
+  Program(prog, { strict }) {
+    // Keep "use strict" on top.
+    const hoistTo = strict ? prog.body[1] : prog
+
     prog.walk('body', stmt => {
       if (!stmt.isExpressionStatement()) return
       const expr = stmt.expression
@@ -71,7 +76,7 @@ const hoistJestMock: import('nebu').Plugin = {
       if (!expr.callee.isMemberExpression()) return
       const callee = expr.callee.toString()
       if (callee == 'jest.mock') {
-        prog.before(stmt.toString() + '\n')
+        hoistTo.before(stmt.toString() + '\n')
         stmt.remove()
       }
     })
