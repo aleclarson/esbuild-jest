@@ -10,47 +10,49 @@ export interface Options {
   target?: string
 }
 
-export const createTransformer = (options: Options | null) => {
-  if (!options) options = {}
-  const { loaders = {} } = options
-  delete options.loaders
-  return {
-    process(content: string, filename: string) {
-      const ext = getExt(filename)
-      const strict = /^(im|ex)port /m.test(content)
-      const result = transformSync(content, {
-        loader: loaders[ext] || (extname(filename).slice(1) as Loader),
-        format: 'cjs',
-        target: 'es2018',
-        sourcemap: 'external',
-        sourcefile: filename,
-        ...options,
-        // Esbuild does not enable strict mode when compiling ES modules to
-        // CommonJS format: https://github.com/evanw/esbuild/issues/422#issuecomment-739740602
-        banner: strict ? '"use strict";' : undefined,
-      })
-      if (/\bjest\.mock\b/.test(result.code)) {
-        const { nebu } = require('nebu') as typeof import('nebu')
-        result.code = nebu.process(result.code, {
-          plugins: [hoistJestMock],
-          state: { strict },
-        }).js
-      }
-      const map = {
-        ...JSON.parse(result.map),
-        sourcesContent: null,
-      }
-      // Append the inline sourcemap manually to ensure the "sourcesContent"
-      // is null. Otherwise, breakpoints won't pause within the actual source.
-      return {
-        code:
-          result.code +
-          '\n//# sourceMappingURL=data:application/json;base64,' +
-          Buffer.from(JSON.stringify(map)).toString('base64'),
-        map,
-      }
-    },
-  }
+export default {
+  createTransformer(options: Options | null) {
+    if (!options) options = {}
+    const { loaders = {} } = options
+    delete options.loaders
+    return {
+      process(content: string, filename: string) {
+        const ext = getExt(filename)
+        const strict = /^(im|ex)port /m.test(content)
+        const result = transformSync(content, {
+          loader: loaders[ext] || (extname(filename).slice(1) as Loader),
+          format: 'cjs',
+          target: 'es2018',
+          sourcemap: 'external',
+          sourcefile: filename,
+          ...options,
+          // Esbuild does not enable strict mode when compiling ES modules to
+          // CommonJS format: https://github.com/evanw/esbuild/issues/422#issuecomment-739740602
+          banner: strict ? '"use strict";' : undefined,
+        })
+        if (/\bjest\.mock\b/.test(result.code)) {
+          const { nebu } = require('nebu') as typeof import('nebu')
+          result.code = nebu.process(result.code, {
+            plugins: [hoistJestMock],
+            state: { strict },
+          }).js
+        }
+        const map = {
+          ...JSON.parse(result.map),
+          sourcesContent: null,
+        }
+        // Append the inline sourcemap manually to ensure the "sourcesContent"
+        // is null. Otherwise, breakpoints won't pause within the actual source.
+        return {
+          code:
+            result.code +
+            '\n//# sourceMappingURL=data:application/json;base64,' +
+            Buffer.from(JSON.stringify(map)).toString('base64'),
+          map,
+        }
+      },
+    }
+  },
 }
 
 function getExt(str: string) {
